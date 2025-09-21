@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ford Car Price Prediction Dashboard</title>
+    <!-- Google Fonts for a modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General body and container styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f6f9; /* A cooler, more professional background */
+            color: #343a40; /* Darker text for better contrast */
+            margin: 0;
+            padding: 40px 20px; /* More vertical padding */
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .dashboard-container {
+            max-width: 1400px; /* Wider container for larger screens */
+            margin: auto;
+            background-color: #fff;
+            padding: 40px; /* More internal spacing */
+            border-radius: 12px; /* Softer corners */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07); /* Softer, deeper shadow */
+        }
+        
+        /* Header Styling */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* Align items to the top */
+            flex-wrap: wrap; /* Allows wrapping on smaller screens */
+            padding-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 30px;
+        }
+
+        .last-updated {
+            font-size: 0.9em;
+            color: #6c757d;
+            font-weight: 400;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: #6c757d;
+            margin: 5px 0 0 0;
+            font-weight: 300;
+        }
+
+        h1 {
+            color: #212529;
+            font-weight: 600;
+            font-size: 2.5em; /* Larger title */
+            margin: 0;
+        }
+
+        h2 {
+            color: #495057;
+            text-align: left;
+            font-size: 1.6em;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        /* Metrics section styling */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Creates a 4-column layout for the metric cards */
+            gap: 25px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-left: 7px solid #4e73df; /* Thicker accent border */
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Subtle background tint on hover for metric cards */
+        .metric-card.card-r2:hover { background-color: rgba(78, 115, 223, 0.05); }
+        .metric-card.card-adj-r2:hover { background-color: rgba(28, 200, 138, 0.05); }
+        .metric-card.card-mae:hover { background-color: rgba(246, 194, 62, 0.05); }
+        .metric-card.card-rmse:hover { background-color: rgba(231, 74, 59, 0.05); }
+
+        /* Unique colors for each metric card */
+        .metric-card.card-r2 { border-left-color: #4e73df; } /* Blue */
+        .metric-card.card-adj-r2 { border-left-color: #1cc88a; } /* Green */
+        .metric-card.card-mae { border-left-color: #f6c23e; } /* Yellow */
+        .metric-card.card-rmse { border-left-color: #e74a3b; } /* Red */
+
+        .metric-card.card-r2 h3 { color: #4e73df; }
+        .metric-card.card-adj-r2 h3 { color: #1cc88a; }
+        .metric-card.card-mae h3 { color: #f6c23e; }
+        .metric-card.card-rmse h3 { color: #e74a3b; }
+
+        .metric-card h3 {
+            margin: 0 0 10px 0;
+            color: #6c757d; /* Softer color for the title */
+            font-size: 1.1em;
+            font-weight: 400;
+        }
+        .metric-card p {
+            margin: 0;
+            font-size: 2.2em; /* More prominent value */
+            font-weight: 700; /* Bolder number */
+            color: #343a40; /* Darker color for the value */
+        }
+
+        /* Charts section styling */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Creates a responsive 3-column layout on most screens */
+            gap: 25px;
+        }
+        .chart-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+            border-top: 4px solid #e9ecef; /* Neutral top border for hover effect */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            border-top-color: #4e73df; /* Highlight with primary color on hover */
+        }
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .chart-container h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #495057;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div class="header">
+            <div>
+                <h1>Ford Car Price Prediction Dashboard</h1>
+                <p class="subtitle">Model performance and data insights.</p>
+            </div>
+            <p class="last-updated">Updated: <span id="last-updated-time"></span></p>
+        </div>
+        
+        <h2>Model Performance Metrics</h2>
+        <div class="metrics-grid">
+            <div class="metric-card card-r2">
+                <h3>R² Score</h3>
+                <p id="r2-score"></p>
+            </div>
+            <div class="metric-card card-adj-r2">
+                <h3>Adjusted R² Score</h3>
+                <p id="adj-r2-score"></p>
+            </div>
+            <div class="metric-card card-mae">
+                <h3>Mean Absolute Error (MAE)</h3>
+                <p id="mae-score"></p>
+            </div>
+            <div class="metric-card card-rmse">
+                <h3>Root Mean Squared Error (RMSE)</h3>
+                <p id="rmse-score"></p>
+            </div>
+        </div>
+
+        <h2>Visualizations</h2>
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3>Price Distribution</h3>
+                <img src="images/download (1).png" alt="Price Distribution Chart">
+            </div>
+            <div class="chart-container">
+                <h3>Feature Correlation Heatmap</h3>
+                <img src="images/download (2).png" alt="Feature Correlation Heatmap">
+            </div>
+            <div class="chart-container">
+                <h3>Price by Year</h3>
+                <img src="images/download (3).png" alt="Price by Year Chart">
+            </div>
+            <div class="chart-container">
+                <h3>Price by Model</h3>
+                <img src="images/download (9).png" alt="Price by Model Chart">
+            </div>
+            <div class="chart-container">
+                <h3>Price vs. Mileage</h3>
+                <img src="images/download (4).png" alt="Price vs. Mileage Chart">
+            </div>
+            <div class="chart-container">
+                <h3>Price by Engine Size</h3>
+                <img src="images/download (5).png" alt="Price by Engine Size Chart">
+            </div>
+            <div class="chart-container">
+                <h3>Price by Transmission Type</h3>
+                <img src="images/download (6).png" alt="Price by Transmission Chart">
+            </div>
+            <div class="chart-container">
+                <h3>Price by Fuel Type</h3>
+                <img src="images/download (7).png" alt="Price by Fuel Type Chart">
+            </div>
+        </div>
+    </div>
+
+    <script src="metrics.js"></script>
+    <script>
+        // This function runs once the HTML document is fully loaded.
+        function populateMetrics() {
+            // Set the "Last Updated" timestamp
+            document.getElementById('last-updated-time').innerText = metrics.lastUpdated || new Date().toLocaleString();
+
+            // Check if the metrics object from metrics.js was loaded successfully
+            if (typeof metrics !== 'undefined') {
+                document.getElementById('r2-score').innerText = metrics.r2;
+                document.getElementById('adj-r2-score').innerText = metrics.adjR2;
+                document.getElementById('mae-score').innerText = `$${metrics.mae.toFixed(2)}`;
+                document.getElementById('rmse-score').innerText = `$${metrics.rmse.toFixed(2)}`;
+            } else {
+                console.error('Error: The "metrics" object is not defined. Make sure metrics.js is loaded correctly.');
+                document.querySelectorAll('.metric-card p').forEach(p => p.innerText = 'N/A');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', populateMetrics);
+    </script>
+</body>
+</html>
