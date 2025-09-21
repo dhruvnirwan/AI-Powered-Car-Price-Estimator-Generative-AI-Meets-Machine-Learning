@@ -4,6 +4,9 @@
 This project predicts **used car prices** by training **Machine Learning (ML)** models on historical car data and applying **Generative AI (GenAI)** for natural-language insights.  
 The dataset **`ford.csv`** contains features like model, year, transmission, mileage, fuel type, tax, mpg, and engine size.  
 
+## Dashboard
+https://github.com/dhruvnirwan/AI-Powered-Car-Price-Estimator-Generative-AI-Meets-Machine-Learning/blob/main/Dashboard/images/Screenshot_21-9-2025_182149_192.168.1.23.jpeg
+
 ---
 
 ## 🔄 Workflow  
